@@ -148,7 +148,7 @@ def compute_features(content,
     style_features = []
     config_proto = tf.compat.v1.ConfigProto()
     config_proto.gpu_options.allow_growth = True
-    with g.as_default(), g.device('/cpu:0'), tf.Session(config=config_proto) as sess:
+    with g.as_default(), g.device('/cpu:0'), tf.compat.v1.Session(config=config_proto) as sess:
         x = tf.placeholder('float32', [n_frames, n_samples], name="x")
         p = np.reshape(
             np.linspace(0.0, n_samples - 1, n_samples), [n_samples, 1])
@@ -241,7 +241,7 @@ def compute_stylization(kernels,
             opt = tf.contrib.opt.ScipyOptimizerInterface(
                 loss, method='L-BFGS-B', options={'maxiter': iterations})
             # Optimization
-            with tf.Session() as sess:
+            with tf.compat.v1.Session() as sess:
                 sess.run(tf.initialize_all_variables())
                 print('Started optimization.')
                 opt.minimize(sess)
@@ -250,7 +250,7 @@ def compute_stylization(kernels,
             opt = tf.train.AdamOptimizer(
                 learning_rate=learning_rate).minimize(loss)
             # Optimization
-            with tf.Session() as sess:
+            with tf.compat.v1.Session() as sess:
                 sess.run(tf.initialize_all_variables())
                 print('Started optimization.')
                 for i in range(iterations):
