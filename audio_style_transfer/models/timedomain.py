@@ -149,7 +149,7 @@ def compute_features(content,
     config_proto = tf.compat.v1.ConfigProto()
     config_proto.gpu_options.allow_growth = True
     with g.as_default(), g.device('/cpu:0'), tf.compat.v1.Session(config=config_proto) as sess:
-        x = tf.placeholder('float32', [n_frames, n_samples], name="x")
+        x = tf.compat.v1.placeholder('float32', [n_frames, n_samples], name="x")
         p = np.reshape(
             np.linspace(0.0, n_samples - 1, n_samples), [n_samples, 1])
         k = np.reshape(
@@ -182,7 +182,9 @@ def compute_features(content,
                 strides=[1, stride, stride, 1],
                 padding="VALID",
                 name="conv{}".format(layer_i))
-            net = tf.nn.relu(conv)
+            net = 
+            
+            nn.relu(conv)
             content_feature = net.eval(feed_dict={x: content_tf})
             content_features.append(content_feature)
             style_feature = net.eval(feed_dict={x: style_tf})
