@@ -1,7 +1,8 @@
 """NIPS2017 "Time Domain Neural Audio Style Transfer" code repository
 Parag K. Mital
 """
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 import librosa
 import numpy as np
 from scipy.signal import hann
@@ -146,10 +147,10 @@ def compute_features(content,
     kernels = []
     content_features = []
     style_features = []
-    config_proto = tf.compat.v1.ConfigProto()
+    config_proto = tf.ConfigProto()
     config_proto.gpu_options.allow_growth = True
-    with g.as_default(), g.device('/cpu:0'), tf.compat.v1.Session(config=config_proto) as sess:
-        x = tf.compat.v1.placeholder('float32', [n_frames, n_samples], name="x")
+    with g.as_default(), g.device('/cpu:0'), tf.Session(config=config_proto) as sess:
+        x = tf.placeholder('float32', [n_frames, n_samples], name="x")
         p = np.reshape(
             np.linspace(0.0, n_samples - 1, n_samples), [n_samples, 1])
         k = np.reshape(
@@ -182,9 +183,7 @@ def compute_features(content,
                 strides=[1, stride, stride, 1],
                 padding="VALID",
                 name="conv{}".format(layer_i))
-            net = 
-            
-            nn.relu(conv)
+            net = tf.nn.relu(conv)
             content_feature = net.eval(feed_dict={x: content_tf})
             content_features.append(content_feature)
             style_feature = net.eval(feed_dict={x: style_tf})
@@ -243,7 +242,7 @@ def compute_stylization(kernels,
             opt = tf.contrib.opt.ScipyOptimizerInterface(
                 loss, method='L-BFGS-B', options={'maxiter': iterations})
             # Optimization
-            with tf.compat.v1.Session() as sess:
+            with tf.Session() as sess:
                 sess.run(tf.initialize_all_variables())
                 print('Started optimization.')
                 opt.minimize(sess)
@@ -252,7 +251,7 @@ def compute_stylization(kernels,
             opt = tf.train.AdamOptimizer(
                 learning_rate=learning_rate).minimize(loss)
             # Optimization
-            with tf.compat.v1.Session() as sess:
+            with tf.Session() as sess:
                 sess.run(tf.initialize_all_variables())
                 print('Started optimization.')
                 for i in range(iterations):
