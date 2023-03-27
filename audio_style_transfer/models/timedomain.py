@@ -1,6 +1,8 @@
 """NIPS2017 "Time Domain Neural Audio Style Transfer" code repository
 Parag K. Mital
 """
+
+import tensorflow
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 import librosa
