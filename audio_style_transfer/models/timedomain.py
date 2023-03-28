@@ -241,7 +241,7 @@ def compute_stylization(kernels,
                 layer_i + 1])
         loss = content_loss + style_loss
         if optimizer == 'bfgs':
-            opt = tensorflow.contrib.opt.ScipyOptimizerInterface(
+            opt = tf.estimator.opt.ScipyOptimizerInterface(
                 loss, method='L-BFGS-B', options={'maxiter': iterations})
             # Optimization
             with tf.Session() as sess:
